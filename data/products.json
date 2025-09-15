@@ -1,0 +1,54 @@
+[
+  {
+    "id": 1,
+    "title": "Camisa Azul",
+    "description": "Camisa de algodón, talla M, color azul",
+    "code": "CAM-AZ-001",
+    "price": 1500,
+    "status": true,
+    "stock": 5,
+    "category": "Ropa",
+    "thumbnails": [
+      "img/camisa1.jpg"
+    ]
+  },
+  {
+    "id": 2,
+    "title": "Pantalón Negro",
+    "description": "Pantalón de tela, talla L, color negro",
+    "code": "PAN-NE-002",
+    "price": 2000,
+    "status": true,
+    "stock": 10,
+    "category": "Ropa",
+    "thumbnails": [
+      "img/pantalon1.jpg"
+    ]
+  },
+  {
+    "id": 3,
+    "title": "Zapatos Deportivos",
+    "description": "Zapatos deportivos para correr, talla 42",
+    "code": "ZAP-DEP-003",
+    "price": 3500,
+    "status": true,
+    "stock": 20,
+    "category": "Calzado",
+    "thumbnails": [
+      "img/zapatos1.jpg"
+    ]
+  },
+  {
+    "id": 4,
+    "title": "Camisa Roja",
+    "description": "Camisa de algodón, talla L, color rojo",
+    "code": "CAM-RO-004",
+    "price": 1300,
+    "status": true,
+    "stock": 10,
+    "category": "Ropa",
+    "thumbnails": [
+      "img/camisa2.jpg"
+    ]
+  }
+]
