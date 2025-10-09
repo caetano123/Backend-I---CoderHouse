@@ -1,0 +1,102 @@
+body {
+  font-family: Arial, sans-serif;
+  background-color: #f4f4f4;
+  margin: 20px;
+  color: #333;
+}
+
+h1 {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+form#addProductForm {
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 8px;
+  max-width: 600px;
+  margin: 0 auto 30px auto;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+form#addProductForm input {
+  flex: 1 1 calc(50% - 10px);
+  padding: 8px;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+}
+
+form#addProductForm button {
+  flex: 1 1 100%;
+  padding: 10px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background-color 0.2s;
+}
+
+form#addProductForm button:hover {
+  background-color: #0056b3;
+}
+
+#productsList li {
+  background-color: #fff;
+  margin-bottom: 20px;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 1px 5px rgba(0,0,0,0.1);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  position: relative;
+}
+
+#productsList li button {
+  padding: 5px 10px;
+  border-radius: 4px;
+  border: none;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+/* Botón Agregar al carrito */
+#productsList li button.addToCart {
+  background-color: #007bff;
+  color: white;
+}
+
+#productsList li button.addToCart:hover {
+  background-color: #0056b3;
+}
+
+/* Botón Eliminar */
+#productsList li button.deleteProduct {
+  background-color: #dc3545;
+  color: white;
+}
+
+#productsList li button.deleteProduct:hover {
+  background-color: #a71d2a;
+}
+
+#cartProductsList li button.removeFromCart {
+  background-color: #ff8800; /* naranja */
+  color: white;
+  padding: 5px 10px;
+  border-radius: 4px;
+  border: none;
+  cursor: pointer;
+  font-weight: bold;
+  margin-left: 10px;
+}
+
+#cartProductsList li button.removeFromCart:hover {
+  background-color: #cc6b00; /* naranja más oscuro al pasar el mouse */
+}

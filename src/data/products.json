@@ -1,18 +1,5 @@
 [
   {
-    "id": 1,
-    "title": "Camisa Azul",
-    "description": "Camisa de algodón, talla M, color azul",
-    "code": "CAM-AZ-001",
-    "price": 1500,
-    "status": true,
-    "stock": 5,
-    "category": "Ropa",
-    "thumbnails": [
-      "img/camisa1.jpg"
-    ]
-  },
-  {
     "id": 2,
     "title": "Pantalón Negro",
     "description": "Pantalón de tela, talla L, color negro",
@@ -40,15 +27,15 @@
   },
   {
     "id": 4,
-    "title": "Camisa Roja",
-    "description": "Camisa de algodón, talla L, color rojo",
-    "code": "CAM-RO-004",
-    "price": 1300,
-    "status": true,
-    "stock": 10,
+    "title": "Camisa",
+    "description": "Camisa de pana, Talla M",
+    "code": "PA-FE-054",
+    "price": 2500,
+    "stock": 15,
     "category": "Ropa",
     "thumbnails": [
-      "img/camisa2.jpg"
-    ]
+      "img/camisa1.jpg"
+    ],
+    "status": true
   }
 ]

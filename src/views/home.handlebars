@@ -1,0 +1,23 @@
+<link rel="stylesheet" href="/css/style.css">
+
+<h1>Lista de Productos</h1>
+
+<ul id="productsList">
+  {{#each products}}
+    <li>
+      <div class="product-info">
+        <h2>{{this.title}}</h2>
+        <p>{{this.description}}</p>
+        <p><strong>Código:</strong> {{this.code}} | <strong>Precio:</strong> ${{this.price}} | <strong>Stock:</strong> {{this.stock}} | <strong>Categoría:</strong> {{this.category}}</p>
+        
+        {{#if this.thumbnails}}
+          <div class="product-images">
+            {{#each this.thumbnails}}
+              <img src="{{this}}" alt="Imagen de {{../title}}">
+            {{/each}}
+          </div>
+        {{/if}}
+      </div>
+    </li>
+  {{/each}}
+</ul>
