@@ -1,21 +1,27 @@
-<h1>Lista de Productos</h1>
+<h1>{{title}}</h1>
 
-<ul id="productsList">
-  {{#each products}}
-    <li>
-      <div class="product-info">
-        <h2>{{this.title}}</h2>
-        <p>{{this.description}}</p>
-        <p><strong>Código:</strong> {{this.code}} | <strong>Precio:</strong> ${{this.price}} | <strong>Stock:</strong> {{this.stock}} | <strong>Categoría:</strong> {{this.category}}</p>
-        
+<p>Bienvenido a nuestra tienda online!</p>
+
+{{#if products.length}}
+  <h2>Productos destacados</h2>
+  <ul style="list-style: none; padding: 0;">
+    {{#each products}}
+      <li style="margin-bottom: 20px; border-bottom: 1px solid #ccc; padding-bottom: 10px;">
+        <a href="/products/{{this._id}}">
+          <strong>{{this.title}}</strong>
+        </a>
+        <p>Precio: ${{this.price}}</p>
         {{#if this.thumbnails}}
-          <div class="product-images">
-            {{#each this.thumbnails}}
-              <img src="{{this}}" alt="Imagen de {{../title}}">
-            {{/each}}
-          </div>
+          <img src="/{{this.thumbnails.[0]}}" alt="{{this.title}}" width="150" style="border-radius: 8px; margin-top: 5px;">
         {{/if}}
-      </div>
-    </li>
-  {{/each}}
-</ul>
+      </li>
+    {{/each}}
+  </ul>
+{{else}}
+  <p>No hay productos destacados por el momento.</p>
+{{/if}}
+
+<a href="/products">
+  <button style="margin-top: 20px;">Ver todos los productos</button>
+</a>
+

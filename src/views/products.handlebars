@@ -1,0 +1,67 @@
+<h1>{{title}}</h1>
+
+<form id="filterForm" method="GET" action="/products" style="margin-bottom:20px;">
+  <label for="query">Categoría:</label>
+  <select name="query" id="query">
+    <option value="">--Todas--</option>
+    <option value="Ropa" {{#if (eq query "Ropa")}}selected{{/if}}>Ropa</option>
+    <option value="Calzado" {{#if (eq query "Calzado")}}selected{{/if}}>Calzado</option>
+    <option value="Accesorios" {{#if (eq query "Accesorios")}}selected{{/if}}>Accesorios</option>
+  </select>
+
+  <label for="status">Disponibilidad:</label>
+  <select name="status" id="status">
+    <option value="">--Todos--</option>
+    <option value="true" {{#if (eq status "true")}}selected{{/if}}>Disponible</option>
+    <option value="false" {{#if (eq status "false")}}selected{{/if}}>No disponible</option>
+  </select>
+
+  <label for="sort">Ordenar por precio:</label>
+  <select name="sort" id="sort">
+    <option value="">--Sin orden--</option>
+    <option value="asc" {{#if (eq sort "asc")}}selected{{/if}}>Ascendente</option>
+    <option value="desc" {{#if (eq sort "desc")}}selected{{/if}}>Descendente</option>
+  </select>
+
+  <button type="submit">Aplicar</button>
+</form>
+
+
+
+<!-- Selector de Carrito -->
+<div style="margin-bottom: 20px;">
+  <label for="cartSelect"><strong>Selecciona un carrito:</strong></label>
+  <select id="cartSelect">
+    <option value="">-- Selecciona un carrito --</option>
+    {{#each carts}}
+      <option value="{{this._id}}">Carrito #{{this._id}}</option>
+    {{/each}}
+  </select>
+
+  <button id="viewCartBtn">Ver carrito seleccionado</button>
+</div>
+
+<!-- Lista de Productos -->
+<ul style="list-style: none; padding: 0;">
+  {{#each products}}
+    <li style="margin-bottom: 30px; border-bottom: 1px solid #ccc; padding-bottom: 20px;">
+      <a href="/products/{{this._id}}">
+        <h2>{{this.title}}</h2>
+      </a>
+      <p><strong>Precio:</strong> ${{this.price}}</p>
+      <p>{{this.description}}</p>
+
+      <!-- Imagen -->
+      {{#if this.thumbnails}}
+        <div class="product-images" style="margin-top: 10px;">
+          {{#each this.thumbnails}}
+            <img src="/{{this}}" alt="Imagen de {{../title}}" width="150" style="border-radius: 8px; margin-right: 10px;">
+          {{/each}}
+        </div>
+      {{/if}}
+
+      <!-- Botón para agregar al carrito -->
+      <button class="addToCartBtn" data-productid="{{this._id}}">Agregar al carrito</button>
+    </li>
+  {{/each}}
+</ul>

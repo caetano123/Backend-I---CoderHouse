@@ -1,173 +1,130 @@
 const socket = io();
 
-// --- ELEMENTOS DEL DOM ---
-const productsList = document.getElementById('productsList');
-const addProductForm = document.getElementById('addProductForm');
+// ================================
+// AGREGAR PRODUCTO
+// ================================
+document.getElementById("addProductForm").addEventListener("submit", (e) => {
+  e.preventDefault();
 
-const createCartForm = document.getElementById('createCartForm');
-const cartSelect = document.getElementById('cartSelect');
-const cartProductsList = document.getElementById('cartProductsList');
+  const product = {
+    title: document.getElementById("title").value.trim(),
+    description: document.getElementById("description").value.trim(),
+    code: document.getElementById("code").value.trim(),
+    price: Number(document.getElementById("price").value),
+    stock: Number(document.getElementById("stock").value),
+    category: document.getElementById("category").value.trim(),
+    thumbnails: document.getElementById("thumbnails").value
+      .split(",")
+      .map(url => url.trim())
+      .filter(url => url !== "")
+  };
 
-// --- FUNCIONES AUXILIARES ---
-function renderProducts(products) {
-  const selectedCart = cartSelect.value;
+  socket.emit("newProduct", product);
+  e.target.reset();
+});
 
-  productsList.innerHTML = '';
+// ================================
+//  ELIMINAR PRODUCTO
+// ================================
+function deleteProduct(id) {
+  socket.emit("deleteProduct", id);
+}
+
+// ================================
+// CREAR CARRITO NUEVO
+// ================================
+document.getElementById("createCartForm").addEventListener("submit", (e) => {
+  e.preventDefault();
+  socket.emit("newCart");
+});
+
+// ================================
+// AGREGAR PRODUCTO A CARRITO
+// ================================
+function addProductToCart(pid) {
+  const cid = document.getElementById("cartSelect").value;
+  if (!cid) {
+    alert("Selecciona un carrito primero");
+    return;
+  }
+
+  const quantityInput = document.getElementById(`quantity-${pid}`);
+  const quantity = quantityInput ? Number(quantityInput.value) : 1;
+
+  socket.emit("addProductToCart", { cid, pid, quantity });
+}
+
+
+// ================================
+// ➖ ELIMINAR PRODUCTO DE CARRITO
+// ================================
+function removeProductFromCart(pid) {
+  const cid = document.getElementById("cartSelect").value;
+  if (!cid) return alert("Selecciona un carrito primero");
+  socket.emit("removeProductFromCart", { cid, pid });
+}
+
+// ================================
+// 🔄 ACTUALIZAR PRODUCTOS EN TIEMPO REAL
+// ================================
+socket.on("updateProducts", (products) => {
+  const list = document.getElementById("productsList");
+  list.innerHTML = "";
+
   products.forEach(p => {
-    const li = document.createElement('li');
+    const li = document.createElement("li");
     li.innerHTML = `
-      <strong data-id="${p.id}" data-stock="${p.stock}">${p.title}</strong> - $${p.price} <br>
+      <strong>${p.title}</strong> - $${p.price} <br>
       ${p.description} <br>
-      Código: ${p.code} | Stock: ${p.stock} | Categoría: ${p.category}
+      Código: ${p.code} | Stock: ${p.stock} | Categoría: ${p.category} <br>
+      ${p.thumbnails ? p.thumbnails.map(url => `<img src="${url}" width="100">`).join("") : ""}
+      <button onclick="addProductToCart('${p._id}')">🛒 Agregar al carrito</button>
+      <button onclick="deleteProduct('${p._id}')">🗑️ Eliminar producto</button>
     `;
-
-    if (p.thumbnails && p.thumbnails.length) {
-      p.thumbnails.forEach(img => {
-        const image = document.createElement('img');
-        image.src = img;
-        image.width = 100;
-        li.appendChild(image);
-      });
-    }
-
-    // Botón "Agregar al carrito"
-    const addBtn = document.createElement('button');
-    addBtn.textContent = 'Agregar al carrito';
-    addBtn.classList.add('addToCart');
-    addBtn.dataset.id = p.id;
-
-    // Botón "Eliminar producto"
-    const delBtn = document.createElement('button');
-    delBtn.textContent = 'Eliminar de Lista';
-    delBtn.classList.add('deleteProduct');
-    delBtn.dataset.id = p.id;
-
-    li.appendChild(addBtn);
-    li.appendChild(delBtn);
-    productsList.appendChild(li);
+    list.appendChild(li);
   });
+});
 
-  cartSelect.value = selectedCart;
-}
+// ================================
+// 🔄 ACTUALIZAR CARRITOS EN TIEMPO REAL
+// ================================
+socket.on("updateCarts", (carts) => {
+  const select = document.getElementById("cartSelect");
+  select.innerHTML = '<option value="">-- Selecciona un carrito --</option>';
 
-function renderCarts(carts) {
-  const selectedCart = cartSelect.value;
-
-  cartSelect.innerHTML = '<option value="">-- Selecciona un carrito --</option>';
   carts.forEach(c => {
-    const option = document.createElement('option');
-    option.value = c.id;
-    option.textContent = `Carrito #${c.id}`;
-    cartSelect.appendChild(option);
+    const opt = document.createElement("option");
+    opt.value = c._id;
+    opt.textContent = `Carrito ${c._id.slice(-4)}`;
+    select.appendChild(opt);
   });
+});
 
-  if (selectedCart) cartSelect.value = selectedCart;
-}
+// ================================
+// 🔄 ACTUALIZAR PRODUCTOS DE CARRITO SELECCIONADO
+// ================================
+socket.on("updateCartProducts", (cart) => {
+  const list = document.getElementById("cartProductsList");
+  list.innerHTML = "";
 
-function renderCartProducts(cart) {
-  cartProductsList.innerHTML = '';
-  if (!cart || !cart.products.length) {
-    cartProductsList.innerHTML = '<li>No hay productos en este carrito</li>';
+  if (!cart || !cart.products || cart.products.length === 0) {
+    list.innerHTML = "<li>Carrito vacío</li>";
     return;
   }
 
   cart.products.forEach(p => {
-    const li = document.createElement('li');
-    li.dataset.id = p.product;
-    li.dataset.quantity = p.quantity; // <- aquí guardamos la cantidad
-    li.textContent = `Producto ID: ${p.product} | Cantidad: ${p.quantity}`;
-
-    // Botón "Eliminar del carrito"
-    const removeBtn = document.createElement('button');
-    removeBtn.textContent = 'Eliminar del carrito';
-    removeBtn.classList.add('removeFromCart');
-    removeBtn.dataset.id = p.product;
-
-    li.appendChild(removeBtn);
-    cartProductsList.appendChild(li);
+    const li = document.createElement("li");
+    li.innerHTML = `
+      ${p.product.title} - Cantidad: ${p.quantity}
+      <button onclick="removeProductFromCart('${p.product._id}')">❌</button>
+    `;
+    list.appendChild(li);
   });
-}
-
-// --- SOCKET EVENTS ---
-socket.on('updateProducts', renderProducts);
-socket.on('updateCarts', renderCarts);
-socket.on('updateCartProducts', renderCartProducts);
-
-// --- AGREGAR PRODUCTO ---
-addProductForm.addEventListener('submit', e => {
-  e.preventDefault();
-
-  const thumbnailsArray = document.getElementById('thumbnails').value
-    .split(',')
-    .map(t => t.trim())
-    .filter(t => t !== '');
-
-  const prod = {
-    title: document.getElementById('title').value,
-    description: document.getElementById('description').value,
-    code: document.getElementById('code').value,
-    price: parseFloat(document.getElementById('price').value),
-    stock: parseInt(document.getElementById('stock').value),
-    category: document.getElementById('category').value,
-    thumbnails: thumbnailsArray,
-    status: true
-  };
-
-  socket.emit('newProduct', prod);
-  addProductForm.reset();
 });
 
-// --- CREAR CARRITO ---
-createCartForm.addEventListener('submit', e => {
-  e.preventDefault();
-  socket.emit('newCart');
-});
-
-// --- SELECCIONAR CARRITO ---
-cartSelect.addEventListener('change', () => {
-  const selectedId = parseInt(cartSelect.value);
-  if (!selectedId) {
-    cartProductsList.innerHTML = '';
-    return;
-  }
-  socket.emit('getCartProducts', selectedId);
-});
-
-// --- AGREGAR AL CARRITO / ELIMINAR PRODUCTO ---
-productsList.addEventListener('click', e => {
-  const selectedCart = parseInt(cartSelect.value);
-  if (e.target.classList.contains('addToCart')) {
-    if (!selectedCart) return alert('Selecciona primero un carrito');
-
-    const productId = Number(e.target.dataset.id);
-    const li = e.target.parentElement;
-    const stock = Number(li.querySelector('strong').dataset.stock);
-
-    // Verificar cantidad actual en carrito usando dataset.quantity
-    const existingLi = Array.from(cartProductsList.children)
-      .find(item => Number(item.dataset.id) === productId);
-    const currentQuantity = existingLi ? Number(existingLi.dataset.quantity) : 0;
-
-    if (currentQuantity >= stock) {
-      return alert('No se puede agregar más unidades, stock alcanzado');
-    }
-
-    socket.emit('addProductToCart', { cid: selectedCart, pid: productId });
-  }
-
-  if (e.target.classList.contains('deleteProduct')) {
-    const productId = Number(e.target.dataset.id);
-    socket.emit('deleteProduct', productId);
-  }
-});
-
-// --- ELIMINAR DEL CARRITO ---
-cartProductsList.addEventListener('click', e => {
-  const selectedCart = parseInt(cartSelect.value);
-  if (!selectedCart) return;
-
-  if (e.target.classList.contains('removeFromCart')) {
-    const productId = Number(e.target.dataset.id);
-    socket.emit('removeProductFromCart', { cid: selectedCart, pid: productId });
-  }
+// ================================
+// ⚠️ MENSAJES DE ERROR DE STOCK
+// ================================
+socket.on("cartError", (msg) => {
+  alert(msg);
 });
