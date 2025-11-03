@@ -4,11 +4,32 @@ import Cart from "../dao/models/cart.model.js";
 
 const router = Router();
 
-// Página principal (puede listar productos o un home genérico)
+// Página principal con paginación
 router.get("/", async (req, res) => {
-  const products = await Product.find().lean();
-  res.render("home", { title: "Inicio", products });
+  let { limit = 6, page = 1 } = req.query; // por defecto 6 productos por página
+  limit = parseInt(limit);
+  page = parseInt(page);
+
+  const totalProducts = await Product.countDocuments();
+  const totalPages = Math.ceil(totalProducts / limit);
+
+  const products = await Product.find()
+    .skip((page - 1) * limit)
+    .limit(limit)
+    .lean();
+
+  res.render("home", {
+    title: "Inicio",
+    products,
+    hasPrevPage: page > 1,
+    hasNextPage: page < totalPages,
+    prevPage: page > 1 ? page - 1 : null,
+    nextPage: page < totalPages ? page + 1 : null,
+    currentPage: page,
+    totalPages,
+  });
 });
+
 
 // Catálogo con paginación
 router.get("/products", async (req, res) => {
@@ -98,5 +119,6 @@ router.get("/realtime", async (req, res) => {
   const carts = await Cart.find().lean();
   res.render("realtime", { title: "Realtime", products, carts });
 });
+
 
 export default router;

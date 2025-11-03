@@ -1,6 +1,12 @@
+<!-- 🔹 Botón Inicio -->
+<div class="top-bar">
+  <button onclick="window.location.href='/'" class="btn-home">🏠 Inicio</button>
+</div>
+
 <h1>{{title}}</h1>
 
-<form id="filterForm" method="GET" action="/products" style="margin-bottom:20px;">
+<!-- 🔹 Formulario de filtros -->
+<form id="filterForm" method="GET" action="/products" class="filter-form">
   <label for="query">Categoría:</label>
   <select name="query" id="query">
     <option value="">--Todas--</option>
@@ -26,10 +32,8 @@
   <button type="submit">Aplicar</button>
 </form>
 
-
-
-<!-- Selector de Carrito -->
-<div style="margin-bottom: 20px;">
+<!-- 🔹 Selector de Carrito -->
+<div class="cart-selector">
   <label for="cartSelect"><strong>Selecciona un carrito:</strong></label>
   <select id="cartSelect">
     <option value="">-- Selecciona un carrito --</option>
@@ -38,30 +42,45 @@
     {{/each}}
   </select>
 
-  <button id="viewCartBtn">Ver carrito seleccionado</button>
+  <button id="viewCartBtn">Ver carrito</button>
 </div>
 
-<!-- Lista de Productos -->
-<ul style="list-style: none; padding: 0;">
+<!-- 🔹 Lista de productos -->
+<ul id="productsList">
   {{#each products}}
-    <li style="margin-bottom: 30px; border-bottom: 1px solid #ccc; padding-bottom: 20px;">
-      <a href="/products/{{this._id}}">
-        <h2>{{this.title}}</h2>
-      </a>
-      <p><strong>Precio:</strong> ${{this.price}}</p>
-      <p>{{this.description}}</p>
+    <li>
+      <div class="product-info">
+        <a href="/products/{{this._id}}">
+          <h2>{{this.title}}</h2>
+        </a>
+        <p><strong>Precio:</strong> ${{this.price}}</p>
+        <p>{{this.description}}</p>
 
-      <!-- Imagen -->
-      {{#if this.thumbnails}}
-        <div class="product-images" style="margin-top: 10px;">
-          {{#each this.thumbnails}}
-            <img src="/{{this}}" alt="Imagen de {{../title}}" width="150" style="border-radius: 8px; margin-right: 10px;">
-          {{/each}}
-        </div>
-      {{/if}}
+        {{#if this.thumbnails}}
+          <div class="product-images">
+            {{#each this.thumbnails}}
+              <img src="/{{this}}" alt="Imagen de {{../title}}">
+            {{/each}}
+          </div>
+        {{/if}}
+      </div>
 
-      <!-- Botón para agregar al carrito -->
-      <button class="addToCartBtn" data-productid="{{this._id}}">Agregar al carrito</button>
+      <button class="addToCart addToCartBtn" data-productid="{{this._id}}">
+        🛒 Agregar al carrito
+      </button>
     </li>
   {{/each}}
 </ul>
+
+<!-- 🔹 Navegación de páginas -->
+<div class="pagination">
+  {{#if prevLink}}
+    <a href="{{prevLink}}" class="page-btn">⬅️ Anterior</a>
+  {{/if}}
+
+  <span>Página {{page}} de {{totalPages}}</span>
+
+  {{#if nextLink}}
+    <a href="{{nextLink}}" class="page-btn">Siguiente ➡️</a>
+  {{/if}}
+</div>

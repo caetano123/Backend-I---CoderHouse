@@ -1,24 +1,37 @@
 <h1>{{title}}</h1>
 
 {{#if cart.products.length}}
-  <ul>
+  <ul id="cartProductsList">
     {{#each cart.products}}
-      <li style="margin-bottom: 20px;">
-        <strong>{{this.product.title}}</strong> - ${{this.product.price}} x {{this.quantity}} unidades
-        <br>
+      <li>
+        <div class="cart-item-info">
+          <strong>{{this.product.title}}</strong><br>
+          <span>Precio: ${{this.product.price}}</span><br>
+          <span>Cantidad: {{this.quantity}}</span>
+        </div>
+
         {{#if this.product.thumbnails}}
-          <img src="/{{this.product.thumbnails.[0]}}" alt="{{this.product.title}}" width="100" style="border-radius: 8px; margin-top: 5px;">
+          <div class="cart-item-img">
+            <img src="/{{this.product.thumbnails.[0]}}" alt="{{this.product.title}}">
+          </div>
         {{/if}}
       </li>
     {{/each}}
   </ul>
 
-  <p><strong>Total:</strong> ${{total}}</p>
+  <div class="cart-summary">
+    <p><strong>Total:</strong> ${{total}}</p>
 
-  <input type="hidden" id="cartId" value="{{cart._id}}">
-  <button id="emptyCartBtn" data-cartid="{{cart._id}}">Vaciar carrito</button>
+    <input type="hidden" id="cartId" value="{{cart._id}}">
+    <button id="emptyCartBtn" data-cartid="{{cart._id}}" class="btn-danger">Vaciar carrito</button>
+  </div>
+
+  <!-- 🔹 Botón volver -->
+  <div class="back-button">
+    <button onclick="window.location.href='/products'" class="btn-primary">Volver a productos</button>
+  </div>
+
 {{else}}
   <p>No hay productos en este carrito.</p>
-  <button onclick="window.location.href='/products'">Volver al inicio</button>
+  <button onclick="window.location.href='/products'" class="btn-primary">Volver al inicio</button>
 {{/if}}
-

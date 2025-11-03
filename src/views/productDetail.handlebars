@@ -1,30 +1,38 @@
-<h1>{{product.title}}</h1>
+<div class="product-detail-container">
+  <h1>{{product.title}}</h1>
 
-<p><strong>Precio:</strong> ${{product.price}}</p>
-<p><strong>Categoría:</strong> {{product.category}}</p>
-<p><strong>Stock:</strong> {{product.stock}}</p>
-<p><strong>Código:</strong> {{product.code}}</p>
-<p><strong>Descripción:</strong> {{product.description}}</p>
-
-{{#if product.thumbnails}}
-  <div class="product-images" style="margin-top: 10px;">
-    {{#each product.thumbnails}}
-      <img src="/{{this}}" alt="Imagen de {{../product.title}}" width="200" style="border-radius: 8px; margin-right: 10px;">
-    {{/each}}
+  <div class="product-info">
+    <p><strong>Precio:</strong> ${{product.price}}</p>
+    <p><strong>Categoría:</strong> {{product.category}}</p>
+    <p><strong>Stock:</strong> {{product.stock}}</p>
+    <p><strong>Código:</strong> {{product.code}}</p>
+    <p><strong>Descripción:</strong> {{product.description}}</p>
   </div>
-{{/if}}
 
+  {{#if product.thumbnails}}
+    <div class="product-images">
+      {{#each product.thumbnails}}
+        <img src="/{{this}}" alt="Imagen de {{../product.title}}">
+      {{/each}}
+    </div>
+  {{/if}}
 
-<select id="cartSelect" required>
-  <option value="">--Selecciona un carrito--</option>
-  {{#each carts}}
-    <option value="{{this._id}}">Carrito #{{this._id}}</option>
-  {{/each}}
-</select>
+  <div class="product-actions">
+    <select id="cartSelect" required>
+      <option value="">--Selecciona un carrito--</option>
+      {{#each carts}}
+        <option value="{{this._id}}">Carrito #{{this._id}}</option>
+      {{/each}}
+    </select>
 
-<input type="number" id="quantity" value="1" min="1" max="{{product.stock}}">
-<button type="button" class="addToCartBtn" data-productid="{{product._id}}">
-  Agregar al carrito
-</button>
+    <input type="number" id="quantity" value="1" min="1" max="{{product.stock}}">
 
+    <button type="button" class="addToCartBtn" data-productid="{{product._id}}">
+      🛒 Agregar al carrito
+    </button>
+  </div>
 
+  <div class="back-button">
+    <button onclick="window.location.href='/products'" class="btn-primary">← Volver al catálogo</button>
+  </div>
+</div>
